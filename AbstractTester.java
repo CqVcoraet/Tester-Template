@@ -1,4 +1,4 @@
-abstract class AbstractTester {
+public abstract class AbstractTester {
     // Console Colors
     protected final String WARNPRINT;
     protected final String ERRORPRINT;
@@ -12,7 +12,7 @@ abstract class AbstractTester {
 
     // Options
     private boolean showConsoleColors;
-    protected boolean printFailuresOnly;
+    private boolean printFailuresOnly;
 
     // Test Tracking
     protected int passes;
@@ -133,4 +133,20 @@ abstract class AbstractTester {
 		System.out.printf(BLUECYAN + "Tests Run So Far: %d,  Passed: %d (%.1f%%),  Failed: %d (%.1f%%)" + RESET + "\n",
 				totalRun, passes, passes*100.0/totalRun, fails, fails*100.0/totalRun);
 	}
+
+    /**
+     * Asserts that two objects are equal. If they are not, prints a failure message.
+     * @param desc - Description of the test
+     * @param expected - The expected value
+     * @param actual - The actual value
+     */
+    protected void assertEquals(String desc, Object expected, Object actual) {
+        boolean pass = (expected == null && actual == null) || (expected != null && expected.equals(actual));
+        if (!pass) {
+            printTest(desc, false);
+            System.out.println(ERRORPRINT + "Expected: " + expected + ", but got: " + actual + RESET);
+        } else {
+            printTest(desc, true);
+        }
+    }
 }
