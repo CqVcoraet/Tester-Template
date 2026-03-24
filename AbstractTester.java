@@ -23,7 +23,11 @@ public abstract class AbstractTester {
     protected int secTotal;
     protected long startTime;
     protected long endTime;
-    protected final int EXPECTED_TOTAL_TESTS;
+    protected int EXPECTED_TOTAL_TESTS;
+
+    // Special Vars
+    public static final int DISABLE_COLORS = 0;
+    public static final int ENABLE_COLORS = 1;
 
     public AbstractTester() {
         this(false, false, 0);
@@ -67,6 +71,21 @@ public abstract class AbstractTester {
 
     protected void stopTimer() {
         this.endTime = System.nanoTime();
+    }
+
+    /**
+     * Sets the console colors to either on or off. Console colors are off by default.
+     * @param value - Must be either a 0 or 1. For simplicity, use AbstractTester.DISABLE_COLORS or AbstractTester.ENABLE_COLORS
+     */
+    protected void setConsoleColorSetting(int value) {
+        if (value < 0 || value > 1) {
+            throw new IllegalArgumentException("Value must be either a 0 or 1.");
+        }
+        if (value == 0) {
+            showConsoleColors = false;
+        } else {
+            showConsoleColors = true;
+        }
     }
 
     /** Print test results in a consistent format
