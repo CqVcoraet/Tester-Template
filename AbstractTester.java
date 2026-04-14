@@ -88,6 +88,18 @@ public abstract class AbstractTester {
         }
     }
 
+    /**
+     * Sets the number of expected total tests to the set value. Value must be greater than 0.
+     * @param value - The number of tests to set to
+     */
+    protected void setExpectedTotalNumTests(int value) {
+        if (value < 1) {
+            throw new IllegalArgumentException("Value must be greater than 0.");
+        }
+
+        this.EXPECTED_TOTAL_TESTS = value;
+    }
+
     /** Print test results in a consistent format
 	 * @param testDesc description of the test
 	 * @param result indicates if the test passed or failed
@@ -118,7 +130,7 @@ public abstract class AbstractTester {
 
 	/** Print a final summary */
 	protected void printFinalSummary() {
-		endTime = System.nanoTime();
+		stopTimer();
 		long elapsedTime = endTime - startTime;
 		String line = "";
 		// compute percentages safely (avoid divide-by-zero)
@@ -152,6 +164,14 @@ public abstract class AbstractTester {
 		System.out.printf(BLUECYAN + "Tests Run So Far: %d,  Passed: %d (%.1f%%),  Failed: %d (%.1f%%)" + RESET + "\n",
 				totalRun, passes, passes*100.0/totalRun, fails, fails*100.0/totalRun);
 	}
+
+    /**
+     * Prints a section header, intended to describe what the section is about
+     * @param title - The section header
+     */
+    protected void printSectionHeader(String title) {
+        System.out.println("\n" + PURPLE + "===== " + title + " =====" + RESET);
+    }
 
     /**
      * Asserts that two objects are equal. If they are not, prints a failure message.
