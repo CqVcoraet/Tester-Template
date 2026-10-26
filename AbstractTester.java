@@ -1,3 +1,6 @@
+// Imported Packages
+import java.util.Objects;
+
 public abstract class AbstractTester {
     // Console Colors
     protected final String WARNPRINT;
@@ -174,18 +177,117 @@ public abstract class AbstractTester {
     }
 
     /**
-     * Asserts that two objects are equal. If they are not, prints a failure message.
-     * @param desc - Description of the test
-     * @param expected - The expected value
-     * @param actual - The actual value
+     * Asserts if the 2 given objects are equal
+     * @param desc - Description for given test
+     * @param expected - The expected result
+     * @param actual - the actual result
+     * @return true if both objects are equal and false otherwise
      */
-    protected void assertEquals(String desc, Object expected, Object actual) {
-        boolean pass = (expected == null && actual == null) || (expected != null && expected.equals(actual));
+    protected boolean assertEquals(String desc, Object expected, Object actual) {
+        boolean pass = Objects.equals(expected, actual);
         if (!pass) {
             printTest(desc, false);
             System.out.println(ERRORPRINT + "Expected: " + expected + ", but got: " + actual + RESET);
+            return false;
         } else {
             printTest(desc, true);
+            return true;
         }
     }
+
+    protected boolean assertEquals(Object a, Object b) {
+        return Objects.equals(a, b);
+    }
+
+    /**
+     * Checks whether all provided elements are equal to each other.
+     * @param elements - The elements to compare
+     * @return true if all elements are equal (or if fewer than 2 elements are passed), false otherwise
+     */
+    protected boolean assertEquals(Object... elements) {
+        if (elements == null || elements.length < 2) {
+            return true; // 0 or 1 element is vacuously equal to itself
+        }
+        Object first = elements[0];
+        for (int i = 1; i < elements.length; i++) {
+            if (!Objects.equals(first, elements[i])) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Asserts that all provided elements are equal to each other.
+     * If any element differs, logs a failure with the mismatch index.
+     * 
+     * @param desc - Description of the test
+     * @param elements - The elements to compare
+     */
+    protected void assertEquals(String desc, Object... elements) {
+        if (elements == null || elements.length < 2) {
+            printTest(desc, false);
+            System.out.println(ERRORPRINT + "Assertion Error: At least 2 elements required for comparison." + RESET);
+            return;
+        }
+
+        Object expected = elements[0];
+        for (int i = 1; i < elements.length; i++) {
+            if (!Objects.equals(expected, elements[i])) {
+                printTest(desc, false);
+                System.out.println(ERRORPRINT + "Mismatch at argument index [" + i + "]" 
+                    + " -> Expected: " + expected + " (" + (expected == null ? "null" : expected.getClass().getSimpleName()) + ")"
+                    + ", but got: " + elements[i] + " (" + (elements[i] == null ? "null" : elements[i].getClass().getSimpleName()) + ")" 
+                    + RESET);
+                return;
+            }
+        }
+        printTest(desc, true);
+    }
+
+    protected boolean assertTrue(boolean a, boolean b) {
+        return a && b;
+    }
+
+    /**
+     * Asserts that all provided booleans are true.
+     * @param elements - One or more boolean conditions
+     * @return true if all elements are true, false otherwise
+     */
+    protected boolean assertTrue(boolean... elements) {
+        if (elements == null || elements.length == 0) {
+            return false;
+        }
+        for (boolean element : elements) {
+            if (!element) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Asserts that both arguments are false
+     */
+    protected boolean assertFalse(boolean a, boolean b) {
+        return !a && !b;
+    }
+
+    /**
+     * Asserts that all arguments are false
+     * @param elements - Arguments to provide
+     * @return - true if all arguments are false and false otherwise
+     */
+    protected boolean assertFalse(boolean... elements) {
+        if (elements == null || elements.length == 0) {
+            return false;
+        }
+        for (boolean element: elements) {
+            if (element) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 }
